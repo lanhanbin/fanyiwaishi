@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, Database, FileCheck, Search, Filter, CheckCircle, XCircle, MoreVertical, Ban, PlayCircle, Eye, Trash2, Edit, ChevronDown, ChevronRight, History, Upload, RotateCcw, FileDiff, GitCommit, UploadCloud, Plus, FileText, X, Newspaper, ArrowUp, ArrowDown, Pin, ImageIcon, Paperclip, GraduationCap, Award, Power, PowerOff, Settings, Network, Users, Key, FileUp, Shield } from 'lucide-react';
+import { Home, Database, FileCheck, Search, Filter, CheckCircle, XCircle, MoreVertical, Ban, PlayCircle, Eye, Trash2, Edit, ChevronDown, ChevronRight, History, Upload, RotateCcw, FileDiff, GitCommit, UploadCloud, Plus, FileText, X, Newspaper, ArrowUp, ArrowDown, Pin, ImageIcon, Paperclip, GraduationCap, Award, Power, PowerOff, Settings, Network, Users, Key, FileUp, Shield, ClipboardList } from 'lucide-react';
+import HumanTranslationOrders from '../components/HumanTranslationOrders';
 
-type AdminTab = 'resources' | 'approvals' | 'upload' | 'news' | 'achievements' | 'organization' | 'users' | 'roles';
+type AdminTab = 'resources' | 'approvals' | 'upload' | 'news' | 'achievements' | 'organization' | 'users' | 'roles' | 'orders';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>('resources');
   const [isResourceMenuOpen, setIsResourceMenuOpen] = useState(true);
+  const [isOrderMenuOpen, setIsOrderMenuOpen] = useState(true);
   const [isTiangongMenuOpen, setIsTiangongMenuOpen] = useState(true);
   const [isSystemMenuOpen, setIsSystemMenuOpen] = useState(true);
   
@@ -868,6 +870,35 @@ export default function AdminDashboard() {
 
           <div className="px-2 mt-4">
             <button 
+              onClick={() => setIsOrderMenuOpen(!isOrderMenuOpen)}
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <ClipboardList className="w-5 h-5" />
+                订单管理
+              </div>
+              <ChevronDown className={`w-4 h-4 transition-transform ${isOrderMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {isOrderMenuOpen && (
+              <div className="ml-8 mt-1 space-y-1 pr-2">
+                <button 
+                  onClick={() => setActiveTab('orders')}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    activeTab === 'orders' 
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <ClipboardList className="w-4 h-4" />
+                  订单列表
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="px-2 mt-4">
+            <button 
               onClick={() => setIsTiangongMenuOpen(!isTiangongMenuOpen)}
               className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
             >
@@ -979,7 +1010,7 @@ export default function AdminDashboard() {
       <main className="flex-1 p-8 overflow-hidden flex flex-col min-w-0">
         <header className="mb-8 shrink-0">
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-            {activeTab === 'resources' ? '共享资源管理' : activeTab === 'upload' ? '资源上传' : activeTab === 'news' ? '联盟资讯发布管理' : activeTab === 'achievements' ? '项目成果管理' : activeTab === 'organization' ? '组织管理' : activeTab === 'users' ? '用户管理' : activeTab === 'roles' ? '角色管理' : '分享审核申请'}
+            {activeTab === 'resources' ? '共享资源管理' : activeTab === 'upload' ? '资源上传' : activeTab === 'news' ? '联盟资讯发布管理' : activeTab === 'achievements' ? '项目成果管理' : activeTab === 'organization' ? '组织管理' : activeTab === 'users' ? '用户管理' : activeTab === 'roles' ? '角色管理' : activeTab === 'orders' ? '订单大厅管理' : '分享审核申请'}
           </h1>
           <p className="text-slate-500 mt-2">
             {activeTab === 'resources' 
@@ -996,12 +1027,14 @@ export default function AdminDashboard() {
               ? '管理平台用户，配置用户组织归属及身份类型。'
               : activeTab === 'roles'
               ? '管理联盟管理员、平台管理员及其他角色的权限及用户成员配置。'
+              : activeTab === 'orders'
+              ? '查看、管理和编辑人工翻译服务产生的所有订单。'
               : '处理用户的资源共享申请，审核资料内容合规性。'}
           </p>
         </header>
 
         <div className="flex-1 overflow-hidden">
-          {activeTab === 'resources' ? renderResources() : activeTab === 'upload' ? renderUpload() : activeTab === 'news' ? renderNews() : activeTab === 'achievements' ? renderAchievements() : activeTab === 'organization' ? renderOrganization() : activeTab === 'users' ? renderUsers() : activeTab === 'roles' ? renderRoles() : renderApprovals()}
+          {activeTab === 'resources' ? renderResources() : activeTab === 'upload' ? renderUpload() : activeTab === 'news' ? renderNews() : activeTab === 'achievements' ? renderAchievements() : activeTab === 'organization' ? renderOrganization() : activeTab === 'users' ? renderUsers() : activeTab === 'roles' ? renderRoles() : activeTab === 'orders' ? <div className="h-full overflow-y-auto pr-2"><HumanTranslationOrders isAdmin={true} /></div> : renderApprovals()}
         </div>
       </main>
 

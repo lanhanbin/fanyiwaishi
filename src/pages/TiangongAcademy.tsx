@@ -315,7 +315,7 @@ export default function TiangongAcademy() {
                <div>
                  <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                    <BarChart2 className="w-6 h-6 text-blue-600" />
-                   联盟数据驱动中心
+                   数据看板
                  </h2>
                  <p className="text-sm text-slate-500 mt-1">实时掌握联盟成员发展状况、项目进程与共享资源活跃度</p>
                </div>

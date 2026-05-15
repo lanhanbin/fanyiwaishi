@@ -72,7 +72,11 @@ const statusConfig = {
   completed: { label: '已完成/已验收', color: 'text-green-700 bg-green-50 border-green-200' },
 };
 
-export default function HumanTranslationOrders() {
+interface HumanTranslationOrdersProps {
+  isAdmin?: boolean;
+}
+
+export default function HumanTranslationOrders({ isAdmin = false }: HumanTranslationOrdersProps) {
   const { user } = useAuth();
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -99,8 +103,8 @@ export default function HumanTranslationOrders() {
       {/* Header and Toolbar */}
       <div className="p-6 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div>
-          <h3 className="text-xl font-bold text-slate-800">订单大厅</h3>
-          <p className="text-sm text-slate-500 mt-1">查看和管理所有人工翻译需求订单</p>
+          <h3 className="text-xl font-bold text-slate-800">{isAdmin ? '所有订单' : '订单大厅'}</h3>
+          <p className="text-sm text-slate-500 mt-1">{isAdmin ? '管理平台所有翻译订单' : '查看和管理所有人工翻译需求订单'}</p>
         </div>
         
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -188,7 +192,30 @@ export default function HumanTranslationOrders() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    {order.status === 'manual_taking' && user?.role === 'translator' ? (
+                    {isAdmin ? (
+                      <div className="flex items-center justify-end gap-3">
+                        <button 
+                          className="text-blue-600 hover:bg-blue-50 px-2 py-1 flex items-center justify-center gap-1 rounded transition-colors text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOrder(order);
+                          }}
+                        >
+                          编辑
+                        </button>
+                        <button 
+                          className="text-red-600 hover:bg-red-50 px-2 py-1 flex items-center justify-center gap-1 rounded transition-colors text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if(window.confirm('确定要删除该订单吗？')) {
+                                alert('订单已删除');
+                            }
+                          }}
+                        >
+                          删除
+                        </button>
+                      </div>
+                    ) : order.status === 'manual_taking' && user?.role === 'translator' ? (
                       <button 
                         onClick={(e) => handleTakeOrder(e, order.id)}
                         className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors shadow-sm"

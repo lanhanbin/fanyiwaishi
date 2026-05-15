@@ -54,11 +54,7 @@ export default function TranslationAnalytics() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <BarChart2 className="w-6 h-6 text-blue-600" />
-            人工翻译多维度指标看板
-          </h2>
+        <div className="flex justify-end items-center mb-6">
           <button 
             onClick={exportReport}
             className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 transition-colors shadow-sm"
