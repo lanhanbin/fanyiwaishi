@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { User, ClipboardList, Settings, ShieldCheck, Globe, Star, Award, Video, FileText, Database, Presentation, X, Check, Upload, XCircle, ChevronDown } from 'lucide-react';
 import OrderDetailsModal from '../components/OrderDetailsModal';
+import PublishOrderModal from '../components/PublishOrderModal';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Dashboard() {
@@ -10,6 +11,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'resources'>('profile');
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [isPublishOrderModalOpen, setIsPublishOrderModalOpen] = useState(false);
   
   const [sharingResource, setSharingResource] = useState<any | null>(null);
   const [selectedResource, setSelectedResource] = useState<any | null>(null);
@@ -225,7 +227,7 @@ export default function Dashboard() {
             <h3 className="text-xl font-bold text-slate-800">我发布的订单</h3>
             <p className="text-sm text-slate-500 mt-1">查看您的发布记录和进度</p>
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+          <button onClick={() => setIsPublishOrderModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
             发布新订单
           </button>
         </div>
@@ -784,6 +786,14 @@ export default function Dashboard() {
           </div>
         )}
       </AnimatePresence>
+
+      <PublishOrderModal 
+        isOpen={isPublishOrderModalOpen}
+        onClose={() => setIsPublishOrderModalOpen(false)}
+        onSubmitSuccess={(orderId) => {
+          alert(`订单发布成功！单号：${orderId}`);
+        }}
+      />
     </div>
   );
 }

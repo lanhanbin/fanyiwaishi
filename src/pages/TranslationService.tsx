@@ -2,6 +2,7 @@ import { useState } from 'react';
 import TranslationStudio from '../components/TranslationStudio';
 import HumanTranslationOrders from '../components/HumanTranslationOrders';
 import PublishOrderModal from '../components/PublishOrderModal';
+import TranslationAnalytics from '../components/TranslationAnalytics';
 import { ShieldCheck, Clock, Users, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 export default function TranslationService() {
@@ -74,6 +75,10 @@ export default function TranslationService() {
                <h3 className="font-bold text-lg mb-2">海量译员池</h3>
                <p className="text-sm text-slate-600">基于大数据标签智能匹配译员，评级机制优胜劣汰，确保专业对口。</p>
             </div>
+          </div>
+          
+          <div className="mt-12 mb-8">
+            <TranslationAnalytics />
           </div>
           
           <HumanTranslationOrders />

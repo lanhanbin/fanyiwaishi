@@ -3,9 +3,10 @@ import {
   Bell, Newspaper, Calendar, Pin, Paperclip, Download, Search, Filter, 
   Image as ImageIcon, FileText, Building2, Tag, ChevronRight, Award, 
   FolderOpen, CalendarDays, BookOpen, X, Eye, Video, Presentation, Mic, PlayCircle,
-  User, HardDrive
+  User, HardDrive, BarChart2, Activity, Users, GitMerge, Target
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 
 type ResourceType = 'doc' | 'video' | 'ppt' | 'image' | 'audio';
 
@@ -144,8 +145,58 @@ const mockMembers: AllianceMember[] = [
 ];
 
 export default function TiangongAcademy() {
-  const [activeMainTab, setActiveMainTab] = useState<'news' | 'outcomes' | 'members'>('news');
+  const [activeMainTab, setActiveMainTab] = useState<'analytics' | 'news' | 'outcomes' | 'members'>('analytics');
   
+  // Analytics State
+  const [timeRange, setTimeRange] = useState<'day' | 'week' | 'month' | 'quarter'>('month');
+
+  const trendData = {
+    day: [
+      { name: '08:00', resources: 5, activity: 12 },
+      { name: '10:00', resources: 12, activity: 45 },
+      { name: '12:00', resources: 15, activity: 52 },
+      { name: '14:00', resources: 18, activity: 48 },
+      { name: '16:00', resources: 22, activity: 61 },
+      { name: '18:00', resources: 14, activity: 55 },
+    ],
+    week: [
+      { name: '周一', resources: 120, activity: 450 },
+      { name: '周二', resources: 150, activity: 520 },
+      { name: '周三', resources: 180, activity: 480 },
+      { name: '周四', resources: 220, activity: 610 },
+      { name: '周五', resources: 140, activity: 550 },
+      { name: '周六', resources: 90, activity: 300 },
+      { name: '周日', resources: 110, activity: 350 },
+    ],
+    month: [
+      { name: '1日', resources: 320, activity: 1450 },
+      { name: '5日', resources: 350, activity: 1520 },
+      { name: '10日', resources: 380, activity: 1480 },
+      { name: '15日', resources: 420, activity: 1610 },
+      { name: '20日', resources: 340, activity: 1550 },
+      { name: '25日', resources: 290, activity: 1300 },
+      { name: '30日', resources: 310, activity: 1350 },
+    ],
+    quarter: [
+      { name: '一月', resources: 1500, activity: 5450 },
+      { name: '二月', resources: 1200, activity: 4520 },
+      { name: '三月', resources: 1800, activity: 6480 },
+    ],
+  };
+
+  const projectStatusData = [
+    { name: '立项阶段', value: 12 },
+    { name: '研发中', value: 25 },
+    { name: '测试评估', value: 8 },
+    { name: '已落地', value: 15 },
+  ];
+
+  const PROJECT_COLORS = ['#fbbf24', '#3b82f6', '#a855f7', '#10b981'];
+
+  const exportReport = () => {
+    alert("标准化报表已导出为PDF格式");
+  };
+
   // News State
   const [noticeTypeFilter, setNoticeTypeFilter] = useState<'全部' | NoticeType>('全部');
   
@@ -223,32 +274,224 @@ export default function TiangongAcademy() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
         
         {/* Main Tabs Segmented Control */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 max-w-lg mx-auto mb-8 flex transition-all">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 max-w-2xl mx-auto mb-8 flex transition-all">
+           <button 
+             onClick={() => setActiveMainTab('analytics')}
+             className={`flex-1 flex justify-center items-center gap-2 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
+               activeMainTab === 'analytics' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+             }`}
+           >
+             <BarChart2 className="w-4 h-4" /> 联盟看板
+           </button>
            <button 
              onClick={() => setActiveMainTab('news')}
-             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
+             className={`flex-1 flex justify-center items-center gap-2 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
                activeMainTab === 'news' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
              }`}
            >
-             联盟资讯
+             <Newspaper className="w-4 h-4" /> 联盟资讯
            </button>
            <button 
              onClick={() => setActiveMainTab('outcomes')}
-             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
+             className={`flex-1 flex justify-center items-center gap-2 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
                activeMainTab === 'outcomes' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
              }`}
            >
-             合作项目成果
+             <Award className="w-4 h-4" /> 合作成果
            </button>
            <button 
              onClick={() => setActiveMainTab('members')}
-             className={`flex-1 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
+             className={`flex-1 flex justify-center items-center gap-2 py-2.5 px-4 text-sm font-bold rounded-xl transition-all ${
                activeMainTab === 'members' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
              }`}
            >
-             联盟成员
+             <Building2 className="w-4 h-4" /> 联盟成员
            </button>
         </div>
+
+        {activeMainTab === 'analytics' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+               <div>
+                 <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                   <BarChart2 className="w-6 h-6 text-blue-600" />
+                   联盟数据驱动中心
+                 </h2>
+                 <p className="text-sm text-slate-500 mt-1">实时掌握联盟成员发展状况、项目进程与共享资源活跃度</p>
+               </div>
+               <div className="flex items-center gap-3 w-full sm:w-auto">
+                 <div className="flex bg-slate-100 p-1 rounded-lg">
+                    {[
+                      { id: 'day', label: '日' },
+                      { id: 'week', label: '周' },
+                      { id: 'month', label: '月' },
+                      { id: 'quarter', label: '季' }
+                    ].map(period => (
+                      <button
+                        key={period.id}
+                        onClick={() => setTimeRange(period.id as any)}
+                        className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                          timeRange === period.id ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                        }`}
+                      >
+                        {period.label}
+                      </button>
+                    ))}
+                 </div>
+                 <button 
+                   onClick={exportReport}
+                   className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 transition-colors shadow-sm"
+                 >
+                   <Download className="w-4 h-4" />
+                   导出报表
+                 </button>
+               </div>
+            </div>
+
+            {/* KPIs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+               {[
+                 { label: '联盟成员单位', value: '42', unit: '家', trend: '+3', icon: <Building2 className="w-6 h-6 text-white" />, color: 'bg-emerald-500' },
+                 { label: '合作项目数量', value: '60', unit: '个', trend: '+12', icon: <GitMerge className="w-6 h-6 text-white" />, color: 'bg-blue-500' },
+                 { label: '共享教学资源', value: '1,280', unit: '项', trend: '+145', icon: <FolderOpen className="w-6 h-6 text-white" />, color: 'bg-indigo-500' },
+                 { label: '平台活跃师生', value: '34.5', unit: 'k', trend: '+12%', icon: <Users className="w-6 h-6 text-white" />, color: 'bg-purple-500' },
+               ].map((kpi, index) => (
+                 <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex items-center gap-4 hover:shadow-md transition-shadow">
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center shrink-0 ${kpi.color} shadow-inner`}>
+                       {kpi.icon}
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-slate-500 mb-1">{kpi.label}</div>
+                      <div className="flex items-baseline gap-2">
+                         <span className="text-3xl font-bold text-slate-900 tracking-tight">{kpi.value}</span>
+                         <span className="text-sm text-slate-500">{kpi.unit}</span>
+                      </div>
+                      <div className="text-xs font-semibold text-emerald-600 mt-1 flex items-center gap-1">
+                         <Activity className="w-3.5 h-3.5" /> 较上期 {kpi.trend}
+                      </div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
+                 <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                   <Activity className="w-5 h-5 text-indigo-500" />
+                   活跃指标趋势
+                 </h3>
+                 <div className="h-[350px]">
+                   <ResponsiveContainer width="100%" height="100%">
+                     <AreaChart data={trendData[timeRange]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                       <defs>
+                         <linearGradient id="colorActivity" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#818cf8" stopOpacity={0.3}/>
+                           <stop offset="95%" stopColor="#818cf8" stopOpacity={0}/>
+                         </linearGradient>
+                         <linearGradient id="colorResources" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#34d399" stopOpacity={0.3}/>
+                           <stop offset="95%" stopColor="#34d399" stopOpacity={0}/>
+                         </linearGradient>
+                       </defs>
+                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                       <XAxis dataKey="name" tick={{ fontSize: 13, fill: '#64748b' }} tickLine={false} axisLine={false} dy={10} />
+                       <YAxis yAxisId="left" tick={{ fontSize: 13, fill: '#64748b' }} tickLine={false} axisLine={false} dx={-10} />
+                       <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 13, fill: '#64748b' }} tickLine={false} axisLine={false} dx={10} />
+                       <RechartsTooltip 
+                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
+                       />
+                       <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                       <Area yAxisId="left" type="monotone" dataKey="activity" name="系统活跃度" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorActivity)" />
+                       <Area yAxisId="right" type="monotone" dataKey="resources" name="新增资源数" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorResources)" />
+                     </AreaChart>
+                   </ResponsiveContainer>
+                 </div>
+               </div>
+
+               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col">
+                 <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                   <Target className="w-5 h-5 text-orange-500" />
+                   合作项目状态分布
+                 </h3>
+                 <div className="flex-1 min-h-[300px] flex items-center justify-center relative">
+                   <ResponsiveContainer width="100%" height="100%">
+                     <PieChart>
+                       <Pie
+                         data={projectStatusData}
+                         innerRadius={80}
+                         outerRadius={110}
+                         paddingAngle={5}
+                         dataKey="value"
+                         stroke="none"
+                       >
+                         {projectStatusData.map((entry, index) => (
+                           <Cell key={`cell-${index}`} fill={PROJECT_COLORS[index % PROJECT_COLORS.length]} />
+                         ))}
+                       </Pie>
+                       <RechartsTooltip 
+                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                         itemStyle={{ color: '#1e293b' }}
+                       />
+                     </PieChart>
+                   </ResponsiveContainer>
+                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                     <span className="text-3xl font-bold text-slate-800">60</span>
+                     <span className="text-sm text-slate-500">总项目数</span>
+                   </div>
+                 </div>
+                 
+                 <div className="grid grid-cols-2 gap-4 mt-6">
+                   {projectStatusData.map((item, index) => (
+                     <div key={item.name} className="flex items-center gap-2">
+                       <span className="w-3 h-3 rounded-full" style={{ backgroundColor: PROJECT_COLORS[index] }}></span>
+                       <span className="text-sm text-slate-600">{item.name}</span>
+                       <span className="text-sm font-semibold text-slate-900 ml-auto">{item.value}</span>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                   <FileText className="w-5 h-5 text-blue-500" />
+                   近期动态总览
+                 </h3>
+                 <button className="text-sm font-medium text-blue-600 hover:text-blue-700">查看完整日志</button>
+               </div>
+               <div className="p-0">
+                 <table className="w-full text-left border-collapse">
+                   <thead>
+                     <tr className="bg-white border-b border-slate-100 text-sm font-medium text-slate-500">
+                       <th className="py-4 px-6 font-semibold">时间</th>
+                       <th className="py-4 px-6 font-semibold">动作</th>
+                       <th className="py-4 px-6 font-semibold">相关对象</th>
+                       <th className="py-4 px-6 font-semibold">操作方</th>
+                     </tr>
+                   </thead>
+                   <tbody className="text-sm divide-y divide-slate-50">
+                     {[
+                       { time: '10分钟前', action: '提交项目节点', object: '跨境电商业务虚拟仿真双语教学平台', user: '深圳职业技术大学' },
+                       { time: '1小时前', action: '上传资源', object: '航空语料库技术白皮书.pdf', user: '中国民航大学' },
+                       { time: '3小时前', action: '新成员加入', object: '联盟网络平台', user: '广州民航职业技术学院' },
+                       { time: '昨天 15:30', action: '发布通知', object: '2026年中国职业教育与机器...研讨会', user: '联盟秘书处' },
+                     ].map((log, i) => (
+                       <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
+                         <td className="py-3 px-6 text-slate-500">{log.time}</td>
+                         <td className="py-3 px-6"><span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700">{log.action}</span></td>
+                         <td className="py-3 px-6 font-medium text-slate-700 group-hover:text-blue-600 transition-colors cursor-pointer">{log.object}</td>
+                         <td className="py-3 px-6 text-slate-600">{log.user}</td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+            </div>
+
+          </div>
+        )}
 
         {activeMainTab === 'news' && (
           <div className="space-y-6">
